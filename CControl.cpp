@@ -12,7 +12,6 @@ CControl::~CControl() {}
 // constants
 /////////////
 #define ADC_MAX 4095.0
-#define DEBOUNCE_TIME 0.1
 
 #define ACCEL_X 23
 #define ACCEL_Y 24
@@ -25,7 +24,7 @@ static const char carriage_return_char = '\r';
 static const double init_flush_total_sec = 2.0; // total time allowed to flush startup junk
 static const double init_flush_line_sec = 0.05;  // timeout per attempted line when flushing
 
-static const double command_timeout_sec = 1.0;   // max time to wait for ACK reply 
+static const double command_timeout_sec = 0.05;   // max time to wait for ACK reply 
 
 
 static bool read_line(Serial& serial_port, std::string& out_line, double timeout_seconds)
@@ -84,15 +83,21 @@ bool CControl::get_data(int type, int channel, int& result)
     {
         double elapsed_seconds = (cv::getTickCount() - command_start_tick) / cv::getTickFrequency();
 
-        if (elapsed_seconds > command_timeout_sec) 
+        if (elapsed_seconds > command_timeout_sec)
+        {
+            _connected = false;
             return false;
+        }
 
         // Read one full line
         std::string reply_line;
         double remaining_seconds = command_timeout_sec - elapsed_seconds;
 
-        if (!read_line(_com, reply_line, remaining_seconds)) 
+        if (!read_line(_com, reply_line, remaining_seconds))
+        {
+            _connected = false;
             return false;
+        }
 
         if (reply_line.empty() || reply_line[0] != ack_char) // Ignore garbage lines
             continue;
@@ -116,6 +121,7 @@ bool CControl::get_data(int type, int channel, int& result)
             continue;
 
         result = reply_value;
+        _connected = true;
         return true;
     }
 }
@@ -180,7 +186,7 @@ bool CControl::get_analog_percent(int channel, double& percent)
     return true;
 }
 
-bool CControl::get_button_debounced(int channel)
+bool CControl::get_button_debounced(int channel, double debounce_time)
 {
     int button_val = 1;
     if (!get_data(DIGITAL, channel, button_val))
@@ -199,7 +205,7 @@ bool CControl::get_button_debounced(int channel)
         else
         {
             // Debounce time passed and not yet counted
-            if ((now - _press_start[channel] >= DEBOUNCE_TIME) &&
+            if ((now - _press_start[channel] >= debounce_time) &&
                 (_counted_time[channel] < _press_start[channel]))
             {
                 _counted_time[channel] = now;

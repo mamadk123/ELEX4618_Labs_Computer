@@ -46,8 +46,24 @@ private:
 	std::map<int, double> _press_start;    ///< Per-channel debounce start time
 	std::map<int, double> _counted_time;   ///< Per-channel debounce latch time
 
-public:
+	bool _connected = true; ///< Flag for checking if micro is connected
 
+public:
+	
+	/**
+	 * @brief Returns the current connection status of the microcontroller.
+	 *
+	 * This function indicates whether the serial communication link
+	 * with the microcontroller is currently active.
+	 *
+	 * The connection state is updated internally whenever a serial
+	 * read or write operation succeeds or fails.
+	 *
+	 * @return true  If the serial port is open and communication is valid.
+	 * @return false If communication has failed or the device is disconnected.
+	 */
+	bool is_connected() const { return _connected; }
+	
 	/**
 	 * @brief Constructs a CControl object.
 	 *
@@ -128,7 +144,7 @@ public:
 	 * @param channel Digital input channel to read
 	 * @return true if a new debounced button press is detected, false otherwise
 	*/
-	bool get_button_debounced(int channel);
+	bool get_button_debounced(int channel, double debounce_time = 0.1);
 
 	/**
 	 * @brief Reads accelerometer data.

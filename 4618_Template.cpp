@@ -23,6 +23,7 @@
 
 #include "CSketch.h"
 #include "CPong.h"
+#include "CAsteroidGame.h"
 // Must include Windows.h after Winsock2.h, so Serial must be included after Client/Server
 #include "Serial.h" 
 
@@ -417,6 +418,8 @@ void lab5()
 ////////////////////////////////////////////////////////////////
 void lab6()
 {
+    CAsteroidGame asteroid(cv::Size(800, 600), 5);
+    asteroid.run();
 }
 
 void print_menu()
