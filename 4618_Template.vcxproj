@@ -95,6 +95,8 @@
     <ClInclude Include="CBullet.h" />
     <ClInclude Include="CControl.h" />
     <ClInclude Include="CGameObject.h" />
+    <ClInclude Include="CLab9Client.h" />
+    <ClInclude Include="Client.h" />
     <ClInclude Include="CPong.h" />
     <ClInclude Include="CShip.h" />
     <ClInclude Include="CSketch.h" />
@@ -111,6 +113,8 @@
     <ClCompile Include="CBullet.cpp" />
     <ClCompile Include="CControl.cpp" />
     <ClCompile Include="CGameObject.cpp" />
+    <ClCompile Include="CLab9Client.cpp" />
+    <ClCompile Include="Client.cpp" />
     <ClCompile Include="CPong.cpp" />
     <ClCompile Include="CShip.cpp" />
     <ClCompile Include="CSketch.cpp" />
