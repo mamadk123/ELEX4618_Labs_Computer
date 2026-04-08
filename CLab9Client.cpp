@@ -156,7 +156,7 @@ void CLab9Client::stream_image()
             }
         }
 
-        int key = cv::waitKey(30);
+        int key = cv::waitKey(130);
         if (key == 'q' || key == 'Q')
         {
             break;
